@@ -8,7 +8,8 @@
 |---|---|
 | [01 公告核对、找规律与分组](01_公告核对与字段关联.ipynb) | 用 6,637 份修订公告找出每类常见的危险。再只用品名和外观分组，揭开产品大类和危险标签核对组间差别。 |
 | [02 先查哪两个危险](02_危险分类评估.ipynb) | 在同一组五折比较 kNN、Gini 决策树和 XGBoost 等模型，也检查品名、外观和结构各自的作用。最后复核候选规律，并从「跌落」查到部件。 |
-| [主工作流](../PROJECT_WORKFLOW_refine.md) | 按「先找规律、再评估提示、最后查部件」阅读，附有 A、B、C、家电子类与 D 的原实验结果。 |
+| [主工作流](../OUTLINE_NEO.md) | 按「先找规律、再评估提示、最后查部件」阅读，附有 A、B、C、家电子类与 D 的原实验结果。 |
+| [English presentation outline](../PPT_OUTLINE_EN.md) | Field glossary and slide-by-slide presentation notes. |
 
 ## 一份公告与一个产品系列
 
