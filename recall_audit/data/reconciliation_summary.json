@@ -1,0 +1,40 @@
+{
+  "raw_rows": 6874,
+  "raw_ids": 6464,
+  "repeated_source_id_groups": 248,
+  "rows_in_repeated_source_id_groups": 658,
+  "mapped_rows": 6835,
+  "unresolved_rows": 38,
+  "officially_identified_non_recall_rows": 1,
+  "manual_field_corrections": 4,
+  "corrected_announcements": 6637,
+  "merged_source_rows": 198,
+  "announcements_with_multiple_rows": 126,
+  "announcements_with_multiple_visual_descriptions": 121,
+  "confirmed_split_source_groups": 128,
+  "changed_internal_id_rows": 197,
+  "changed_date_rows": 211,
+  "changed_quantity_rows": 1224,
+  "quantity_unknown_announcements": 455,
+  "visible_remedy_label_disagreements": 654,
+  "by_decision": {
+    "source_id_exact_hazard": 4116,
+    "source_id_date_and_text": 2434,
+    "reassigned_exact_hazard": 122,
+    "reviewed_against_cpsc": 63,
+    "ambiguous_or_low_text_support": 38,
+    "source_id_date_and_product": 8,
+    "source_id_date_count_and_text": 46,
+    "reassigned_corroborated_text": 30,
+    "reassigned_exact_hazard_and_remedy": 9,
+    "source_id_corroborated_text": 7,
+    "official_settlement_without_recall_number": 1
+  },
+  "sources": {
+    "recall_mm_sha256": "cf5b2bc18040aa4ec2cef6006fea858d6c267e07e0746686d3493d88548f1761",
+    "cpsc_api_url": "https://www.saferproducts.gov/RestWebServices/Recall?format=json&RecallDateStart=2000-01-01&RecallDateEnd=2024-12-31",
+    "cpsc_api_sha256": "9a32ad531aee3447a0e2e69a26c2a438b47f02ce180af6031c767551c0d4c2e4",
+    "cpsc_listing_url": "https://www.cpsc.gov/s3fs-public/recall-data/recalls_recall_listing.csv",
+    "cpsc_listing_sha256": "7060ea2c02a53d959e93413c5ac57346bf0a9277c0ae9566c562db08e44684c1"
+  }
+}
