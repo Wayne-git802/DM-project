@@ -74,8 +74,8 @@ STAT 4073 Data Mining · Course Project 2
 
 和原论文对照时，可以沿同一发现讲。原论文用热图指出火灾较集中在电气产品和家用设备，并用 Sentence-BERT 和 t-SNE 查相似案例。本项目报告这两类里的实际占比和分组核对，再固定两项做折外评估，最后从案例给出部件检查问题。设计建议针对有相似结构的产品。 [RECALL-MM 第 4.2 节](https://arxiv.org/html/2503.23213v1#S4.SS2)
 
-复现主分析，从目录中的修订公告数据运行 01、02 两本 Notebook。要重建数据，按核对汇总准备 RECALL-MM 与 CPSC 快照，从仓库根目录运行下列命令。原 A/B/D 需要原始 JSON，实验 C 读取预处理导出的交接表。提交包随代码提供可校验的数据来源、依赖和权重说明。 [运行说明](recall_audit/README.md)
+复现主分析时，01、02 两本 Notebook 通过共享接口读取已有的修订公告数据。要重建，请按核对汇总准备原始 RECALL-MM JSON 和两份 CPSC 快照，运行 [DataPreprocessing.ipynb](DataPreprocessing.ipynb)，或在仓库根目录运行下面的命令。同一准备函数完成原始行质量检查和官方公告核对，也为原 A/B/C/D 生成或提供其原有数据口径。 [运行说明](recall_audit/README.md)
 
 ~~~sh
-python recall_audit/scripts/reconcile.py dataset.json cpsc_api.json cpsc_listing.csv recall_audit/data
+python recall_audit/scripts/project_data.py dataset.json cpsc_api.json cpsc_listing.csv
 ~~~

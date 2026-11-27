@@ -42,7 +42,7 @@ Allow 12 minutes to present and 2 minutes for questions. Use the main headline a
 ### 4. Build one row per official recall notice (1:20)
 
 - Show **6,874 source rows → 6,835 matched rows → 6,637 official recall notices**. The remainder consists of 38 unresolved rows and one settlement news release.
-- The preprocessing notebook checks dates, text, label spelling and missing quantities. The main analysis reconciles the original JSON against CPSC snapshots. Keep separate official notices and retain appearance variants and source-row references when combining rows. Tern 13-231 illustrates the merge.
+- One preprocessing entry point reads the original JSON, checks dates, text, label spelling and missing quantities, and reconciles those source rows against CPSC snapshots. The main notebooks share the resulting notice dataset. Tern 13-231 illustrates how multiple source rows become one official notice while retaining their appearance variants and source-row references.
 - Transition: “Now that each row represents a traceable notice, what hazard labels recur in each product category?” [Reconciliation summary](recall_audit/data/reconciliation_summary.json)
 
 ## Presenter 2 — Discover and check patterns

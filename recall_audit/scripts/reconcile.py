@@ -69,6 +69,7 @@ TEXT_FIELDS = (
 LABEL_FIELDS = (
     "product_classification", "hazard_classification", "remedies_classification",
 )
+HAZARD_ALIASES = {"HEAT_RELATED_EXPOLOSION": "HEAT_RELATED_EXPLOSION"}
 PLACEHOLDERS = {
     "", "-", "n/a", "na", "none", "null", "unknown", "not applicable",
     "not specified", "not available", "not provided", "no description available",
@@ -251,10 +252,6 @@ def rank_candidates(raw, official, batch_size=96):
             yield candidates
 
 
-def read_json(path):
-    return json.loads(path.read_text(encoding="utf-8-sig"))
-
-
 def write_json(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -390,7 +387,7 @@ def unique_texts(rows, field):
 
 
 def recode_label(label):
-    return "HEAT_RELATED_EXPLOSION" if label == "HEAT_RELATED_EXPOLOSION" else label
+    return HAZARD_ALIASES.get(label, label)
 
 
 def remedy_labels(item):
@@ -605,6 +602,30 @@ OVERRIDES = {
 }
 
 
+def build_notice_bundle(raw, source_sha256, cpsc_api, cpsc_listing):
+    """Reconcile the unchanged source rows so recorded row positions remain valid."""
+    if source_sha256 != SOURCE_SHA256:
+        raise ValueError("This review uses row-level decisions for the recorded RECALL-MM source hash.")
+    catalogue = load_official(cpsc_api, cpsc_listing)
+    records, audit = reconcile(raw, catalogue, rank_candidates(raw, catalogue), OVERRIDES)
+    summary = audit_summary(records, audit)
+    summary["sources"] = {
+        "recall_mm_sha256": source_sha256,
+        "cpsc_api_url": API_URL, "cpsc_api_sha256": hash_file(cpsc_api),
+        "cpsc_listing_url": LISTING_URL, "cpsc_listing_sha256": hash_file(cpsc_listing),
+    }
+    return records, summary, audit
+
+
+def write_notice_bundle(output_dir, records, summary, audit):
+    output_dir.mkdir(parents=True, exist_ok=True)
+    write_json(output_dir / "dataset_corrected.json", records)
+    write_json(output_dir / "reconciliation_summary.json", summary)
+    with (output_dir / "source_row_audit.jsonl").open("w", encoding="utf-8") as handle:
+        for row in audit:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
@@ -613,23 +634,12 @@ def main():
     parser.add_argument("output_dir", type=Path)
     args = parser.parse_args()
 
-    if hash_file(args.source) != SOURCE_SHA256:
-        raise ValueError("This review uses row-level decisions for the recorded RECALL-MM source hash.")
-    catalogue = load_official(args.cpsc_api, args.cpsc_listing)
-    raw = read_json(args.source)
-    records, audit = reconcile(raw, catalogue, rank_candidates(raw, catalogue), OVERRIDES)
-    summary = audit_summary(records, audit)
-    summary["sources"] = {
-        "recall_mm_sha256": hash_file(args.source),
-        "cpsc_api_url": API_URL, "cpsc_api_sha256": hash_file(args.cpsc_api),
-        "cpsc_listing_url": LISTING_URL, "cpsc_listing_sha256": hash_file(args.cpsc_listing),
-    }
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    write_json(args.output_dir / "dataset_corrected.json", records)
-    write_json(args.output_dir / "reconciliation_summary.json", summary)
-    with (args.output_dir / "source_row_audit.jsonl").open("w", encoding="utf-8") as handle:
-        for row in audit:
-            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+    source_bytes = args.source.read_bytes()
+    records, summary, audit = build_notice_bundle(
+        json.loads(source_bytes), hashlib.sha256(source_bytes).hexdigest(),
+        args.cpsc_api, args.cpsc_listing,
+    )
+    write_notice_bundle(args.output_dir, records, summary, audit)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 
